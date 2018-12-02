@@ -1,6 +1,6 @@
-import sys
-from random import randrange
+import argparse
 import itertools
+from random import randrange
 from string import ascii_lowercase as lc, ascii_uppercase as uc
 
 
@@ -9,18 +9,21 @@ def make_rot(n):
     return lambda s: s.translate(lookup)
 
 
-def cipher(argv, start=randrange(1, 26)):
-    rotation = itertools.islice(itertools.cycle(range(1, 26)), start, None)
+def cipher(text, start=randrange(1, 26), step=1):
+    rotation = itertools.islice(
+        itertools.cycle(range(1, 26)), start, None, step)
     out = ''
-    for char in argv:
+    for char in text:
         rot = make_rot(next(rotation))
         out += rot(char)
     return out
 
 
-def decipher(start, ciphertext):
+def decipher(ciphertext, start=1, step=1):
     start = int(start)
-    rotation = itertools.islice(itertools.cycle(range(25, 0, -1)), start, None)
+
+    rotation = itertools.islice(
+        itertools.cycle(range(25, 0, -1)), start, None, step)
     out = ''
     for char in ciphertext:
         rot = make_rot(next(rotation))
@@ -29,18 +32,41 @@ def decipher(start, ciphertext):
 
 
 def main():
-    try:
-        if sys.argv[1] == '-c':
-            print(cipher(' '.join(sys.argv[2:]).lower()))
-        elif sys.argv[1] == '-d':
-            start = sys.argv[2]
-            print(decipher(start, ' '.join(sys.argv[3:]).lower()))
-    except IndexError:
-        print('''\nUsage:
+    parser = argparse.ArgumentParser(description='Cipher or Decipher text.')
+    parser.add_argument(
+        '-e',
+        '--encode',
+        action='store_true',
+        help='encode text to ciphertext (default)')
+    parser.add_argument(
+        'text',
+        metavar='text',
+        type=str,
+        nargs='+',
+        help='a string of text to cipher or decipher')
+    parser.add_argument(
+        '-d',
+        '--decode',
+        dest='cipher',
+        default=cipher,
+        action='store_const',
+        const=decipher,
+        help='decode ciphertext')
+    parser.add_argument(
+        '--start',
+        default=1,
+        dest='start',
+        type=int,
+        help='set the rotation starting position (default: 1)')
+    parser.add_argument(
+        '--step',
+        default=1,
+        dest='step',
+        type=int,
+        help='set the step for each character (default: 1)')
 
-python cipher.py -c             convert from plaintext to ciphertext
-python cipher.py -d  <start>    convert from ciphertext to plaintext
-''')
+    args = parser.parse_args()
+    print(args.cipher(' '.join(args.text), start=args.start, step=args.step))
 
 
 if __name__ == "__main__":
