@@ -10,6 +10,11 @@ def make_rot(n):
 
 
 def cipher(text, start=13, step=25):
+    if start is -1:
+        start = randrange(1, 26)
+    if step is -1:
+        step = randrange(1, 26)
+
     rotation = itertools.islice(
         itertools.cycle(range(1, 26)), start-1, None, step)
     out = ''
@@ -20,6 +25,11 @@ def cipher(text, start=13, step=25):
 
 
 def decipher(ciphertext, start=13, step=25):
+    if start is -1:
+        start = randrange(1, 26)
+    if step is -1:
+        step = randrange(1, 26)
+
     rotation = itertools.islice(
         itertools.cycle(range(25, 0, -1)), start-1, None, step)
     out = ''
