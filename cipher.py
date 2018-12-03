@@ -9,9 +9,9 @@ def make_rot(n):
     return lambda s: s.translate(lookup)
 
 
-def cipher(text, start=randrange(1, 26), step=1):
+def cipher(text, start=13, step=25):
     rotation = itertools.islice(
-        itertools.cycle(range(1, 26)), start, None, step)
+        itertools.cycle(range(1, 26)), start-1, None, step)
     out = ''
     for char in text:
         rot = make_rot(next(rotation))
@@ -19,11 +19,9 @@ def cipher(text, start=randrange(1, 26), step=1):
     return out
 
 
-def decipher(ciphertext, start=1, step=1):
-    start = int(start)
-
+def decipher(ciphertext, start=13, step=25):
     rotation = itertools.islice(
-        itertools.cycle(range(25, 0, -1)), start, None, step)
+        itertools.cycle(range(25, 0, -1)), start-1, None, step)
     out = ''
     for char in ciphertext:
         rot = make_rot(next(rotation))
@@ -54,13 +52,13 @@ def main():
         help='decode ciphertext')
     parser.add_argument(
         '--start',
-        default=1,
+        default=13,
         dest='start',
         type=int,
-        help='set the rotation starting position (default: 1)')
+        help='set the rotation starting position (default: 13 caesar)')
     parser.add_argument(
         '--step',
-        default=1,
+        default=25,
         dest='step',
         type=int,
         help='set the step for each character (default: 1)')

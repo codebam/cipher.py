@@ -3,6 +3,9 @@
 cipher.py is a simple cipher program that loops through rotations of 1 to 25,
 with a customizable starting rot and customizable step.
 
+by default cipher.py uses a starting position of 13 and a step of 25, making it
+a simple caesar cipher.
+
 ## How it works
 
 ```bash
